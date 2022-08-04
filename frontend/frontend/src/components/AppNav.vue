@@ -7,7 +7,7 @@
         </v-icon>
         <span class="font-weight-bold overline item-nav mt-3">Login</span>
     </router-link> <br class="my-3">
-    <router-link to="/dashboard">
+    <router-link to="/dashboard" @loginAccount="validate_log" v-if="validate_log">
         <v-icon class="mx-6">
             mdi-monitor-dashboard
         </v-icon>
@@ -19,8 +19,11 @@
 
 <script>
 export default {
+    name: 'logPart',
+    props: ['validate_log'],
     data() {
         return {
+
         }
     }
 }
@@ -29,7 +32,7 @@ export default {
 <style>
 .item-nav {
     color: black;
-    font-size: 1.8em !important;
+    
 }
 .item-nav:hover {
     color: blue;
