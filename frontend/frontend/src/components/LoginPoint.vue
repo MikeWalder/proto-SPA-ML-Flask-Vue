@@ -14,19 +14,19 @@
                         <span class="display-3">Drawer Base</span><br>
                         <span class="overline">Bienvenue, veuillez vous connecter à votre compte</span>
 
-                        <v-form v-model="valid" action="" method="post" @submit="checkLoginForm">
+                        <v-form v-model="valid" action="" method="post">
                             <v-container>
                                 <v-row>
                                     <v-col cols="1"></v-col>
                                     <v-col cols="10">
-                                        <v-text-field v-model="mail" label="E-mail" :rules="emailRules" required>
+                                        <v-text-field id="mailLog" v-model="mail" label="E-mail" :rules="emailRules" required>
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
                                 <v-row>
                                     <v-col cols="1"></v-col>
                                     <v-col cols="10">
-                                        <v-text-field v-model="password" :type="show1 ? 'text' : 'password'" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" @click:append="show1 = !show1" label="Password" :rules="passRules" required>
+                                        <v-text-field  id="passLog" v-model="password" :type="show1 ? 'text' : 'password'" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" @click:append="show1 = !show1" label="Password" :rules="passRules" required>
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
@@ -43,9 +43,18 @@
                                 <v-row>
                                     <v-col cols="1"></v-col>
                                     <v-col cols="10 text-center">
-                                        <v-btn color="success" elevation="6" large class="text-center font-weight-bold px-12 py-2" @click="validation(validate_log)">
+                                        <v-btn color="success" elevation="6" large class="text-center font-weight-bold px-12 py-2" @click="sendValidation">
                                         Valider
                                         </v-btn>
+                                        <v-alert color="light-green" class="mt-6" dense dark dismissible transition="scale-transition" v-if="validForm">
+                                            <v-icon class="mr-4">mdi-check-circle</v-icon>
+                                            L'inscription est validée !<br>
+                                            <span class="ml-6">Redirection...</span> 
+                                            <v-progress-circular indeterminate color="green" class="ml-6"></v-progress-circular>
+                                        </v-alert>
+                                        <v-alert color="#C51162" class="mt-6" dense dark dismissible transition="scale-transition" v-if="errorForm">
+                                            Les informations entrées sont erronées. Réessayez.
+                                        </v-alert>
                                     </v-col>
                                 </v-row>
                             </v-container>
@@ -60,8 +69,7 @@
 <script>
 
 export default {
-    name: 'login',
-    props: ['validate_log'],
+    name: 'LoginPoint',
     data() {
         return {
             valid: false,
@@ -77,19 +85,36 @@ export default {
                 v => !!v || 'Le mot de passe est requis',
                 v => v.length <= 10 || 'Votre mot de passe doit être inférieur à 10 caractères'
             ],
+            validForm: false,
+            errorForm: false,
         }
     },
     methods: {
-        validation(validate_log) {
+        sendValidation() {
             console.log("Le formulaire est activé")
-            this.$emit('loginAccount', validate_log)
-            validate_log = true
-            console.log(this.validate_log)
-            console.log(this.mail)
+            const mailLog = document.getElementById('mailLog')
+            const passLog = document.getElementById('passLog')
+            //const messageForm = document.querySelector('#messageForm')
+            //console.log(messageForm)
+            console.log(this.validForm)
+            this.$emit('validateForm', {validing: this.validForm})
+
+            if(mailLog != '' && passLog != ''){
+                if(mailLog.value == 'mike_walder@hotmail.fr' && passLog.value == '123456'){
+                    //this.$router.push('/dashboard')
+                    this.validForm = true 
+                    console.log("ValidForm est à " + this.validForm)
+                    
+                    //setTimeout(() => {this.$router.push('/dashboard')}, 1500)
+                }
+                else if(mailLog.value !== 'mike_walder@hotmail.fr' && passLog.value !== '123456') {
+                    this.errorForm = true
+                    console.log(this.errorForm)
+                    setTimeout(() => {this.$router.push({path: '/'})}, 1500)
+                }
+            }
+            //this.$router.push('/dashboard')
         },
-        checkLoginForm: function(e) {
-            
-        }
     }
 }
 </script>
