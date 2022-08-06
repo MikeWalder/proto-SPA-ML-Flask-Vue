@@ -37,7 +37,8 @@
                                         </v-checkbox>
                                     </v-col>
                                     <v-col cols="5" class="pt-8">
-                                        Mot de passe perdu ?
+                                        Mot de passe perdu ?<br>
+                                        {{msg}}
                                     </v-col>
                                 </v-row>
                                 <v-row>
@@ -67,7 +68,7 @@
 </template>
 
 <script>
-
+import axios from 'axios';
 export default {
     name: 'LoginPoint',
     data() {
@@ -87,6 +88,8 @@ export default {
             ],
             validForm: false,
             errorForm: false,
+            msg: '',
+            getLogData: '',
         }
     },
     methods: {
@@ -96,16 +99,15 @@ export default {
             const passLog = document.getElementById('passLog')
             //const messageForm = document.querySelector('#messageForm')
             //console.log(messageForm)
-            console.log(this.validForm)
-            this.$emit('validateForm', {validing: this.validForm})
 
             if(mailLog != '' && passLog != ''){
+                this.sendDatasLogin(mailLog.value, passLog.value);
                 if(mailLog.value == 'mike_walder@hotmail.fr' && passLog.value == '123456'){
                     //this.$router.push('/dashboard')
                     this.validForm = true 
-                    console.log("ValidForm est à " + this.validForm)
+                    //console.log("ValidForm est à " + this.validForm)
                     
-                    //setTimeout(() => {this.$router.push('/dashboard')}, 1500)
+                    setTimeout(() => {this.$router.push('/dashboard')}, 2000)
                 }
                 else if(mailLog.value !== 'mike_walder@hotmail.fr' && passLog.value !== '123456') {
                     this.errorForm = true
@@ -113,8 +115,29 @@ export default {
                     setTimeout(() => {this.$router.push({path: '/'})}, 1500)
                 }
             }
-            //this.$router.push('/dashboard')
         },
+        async getResponse(){
+            const path = 'http://localhost:5000/';
+            await axios.get(path)
+            .then((res) => {
+                console.log(res.data)
+                this.msg = res.data.cardDatas.data[0].desc;
+                console.log(this.msg)
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+        },
+        async sendDatasLogin(mail, pass) {
+            console.log(mail + ' et ' + pass)
+            const dataLogin = {mailLog: mail, passLog: pass}
+            axios.post("http://localhost:5000/", dataLogin)
+            .then(response => this.getLogData = response.data).catch((err) => console.error(err))
+        }
+
+    },
+    created(){
+        this.getResponse();
     }
 }
 </script>
