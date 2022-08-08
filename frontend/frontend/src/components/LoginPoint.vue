@@ -14,19 +14,19 @@
                         <span class="display-3">Drawer Base</span><br>
                         <span class="overline">Bienvenue, veuillez vous connecter à votre compte</span>
 
-                        <v-form v-model="valid" action="" method="post">
+                        <v-form v-model="valid" action="/" method="POST">
                             <v-container>
                                 <v-row>
                                     <v-col cols="1"></v-col>
                                     <v-col cols="10">
-                                        <v-text-field id="mailLog" v-model="mail" label="E-mail" :rules="emailRules" required>
+                                        <v-text-field name="mail" id="mailLog" v-model="mail" label="E-mail" :rules="emailRules" required>
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
                                 <v-row>
                                     <v-col cols="1"></v-col>
                                     <v-col cols="10">
-                                        <v-text-field  id="passLog" v-model="password" :type="show1 ? 'text' : 'password'" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" @click:append="show1 = !show1" label="Password" :rules="passRules" required>
+                                        <v-text-field  name="password" id="passLog" v-model="password" :type="show1 ? 'text' : 'password'" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" @click:append="show1 = !show1" label="Password" :rules="passRules" required>
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
@@ -44,7 +44,7 @@
                                 <v-row>
                                     <v-col cols="1"></v-col>
                                     <v-col cols="10 text-center">
-                                        <v-btn color="success" elevation="6" large class="text-center font-weight-bold px-12 py-2" @click="sendValidation">
+                                        <v-btn type="submit" color="success" elevation="6" large class="text-center font-weight-bold px-12 py-2" @click.once="sendValidation">
                                         Valider
                                         </v-btn>
                                         <v-alert color="light-green" class="mt-6" dense dark dismissible transition="scale-transition" v-if="validForm">
@@ -114,9 +114,11 @@ export default {
                     console.log(this.errorForm)
                     setTimeout(() => {this.$router.push({path: '/'})}, 1500)
                 }
+            } else {
+                this.errorForm = true
             }
         },
-        async getResponse(){
+        /* async getResponse(){
             const path = 'http://localhost:5000/';
             await axios.get(path)
             .then((res) => {
@@ -127,18 +129,24 @@ export default {
             .catch((err) => {
                 console.error(err);
             });
+        }, */
+        updateLoginTable() {
+            axios.get('/').then(function(response) {
+                this.login = response.data.login
+            }.bind(this))
         },
         async sendDatasLogin(mail, pass) {
             console.log(mail + ' et ' + pass)
-            const dataLogin = {mailLog: mail, passLog: pass}
-            axios.post("http://localhost:5000/", dataLogin)
-            .then(response => this.getLogData = response.data).catch((err) => console.error(err))
+            let dataLogin = {mailLog: mail, passLog: pass}
+            axios.post('http://localhost:5000/', dataLogin).then(function(response) {
+                this.updateLoginTable()
+            }.bind(this))
         }
 
     },
-    created(){
+    /* created(){
         this.getResponse();
-    }
+    } */
 }
 </script>
 
