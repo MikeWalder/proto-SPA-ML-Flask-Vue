@@ -2,7 +2,6 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 import json
 import requests
-import inspect 
 from flask_cors import CORS
 
 # configuration
@@ -39,7 +38,7 @@ app.config.from_object(__name__)
 # Enables CORS (Cross-Origin Resource Sharing)
 #CORS(app, resources={r'/*':{'origins':'*', "allow_headers":"Access-Control-Allow-Origin"}})
 CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+# app.config['CORS_HEADERS'] = 'Content-Type'
 
 GAMES = [12]
 
@@ -49,6 +48,19 @@ def tableLogin_get():
     logins = Login.query.order_by(Login.id.desc()).all()
     return jsonify(logins=[login.get_dict() for login in logins])
 
+@app.route('/log', methods=['POST'])
+def logAccount():
+    response_object = {'status': 'success'}
+    mail = request.form['mail']
+    password = request.form['password']
+    response_object['mail'] = mail
+    response_object['password'] = password
+    return response_object
+
+@app.route('/log', methods=['GET'])
+def logger():
+    logins = Login.query.order_by(Login.id.desc()).all()
+    return jsonify(logins=[login.get_dict() for login in logins])
 
 @app.route('/projet1', methods=['GET', 'POST'])
 def log():

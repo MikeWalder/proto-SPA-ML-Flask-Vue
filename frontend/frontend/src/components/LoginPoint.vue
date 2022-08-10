@@ -4,64 +4,68 @@
             <v-row no-gutters>
                 <v-col offset-sm="0" md="6">
                     <v-img
-                    src="https://picsum.photos/510/300?random"
-                    aspect-ratio="1.7"
+                    src="../../public/computer-mouse-in-action.jpg"
+                    aspect-ratio="1.3"
                     height="100vh"
-                    ></v-img>
+                    transition="scroll-x-transition"
+                    >
+                    </v-img>
                 </v-col>
+
                 <v-col cols="12" md="6" class="grey lighten-2">
                     <div class="text-center form_part">
-                        <span class="display-3">Drawer Base</span><br>
+                        <span class="display-3 mainTitleAppli">Drawer Base</span><br><br>
                         <span class="overline">Bienvenue, veuillez vous connecter à votre compte</span>
 
-                        <v-form v-model="valid" action="/" method="POST">
+                        <div>
                             <v-container>
                                 <v-row>
-                                    <v-col cols="1"></v-col>
-                                    <v-col cols="10">
+                                    <v-col cols="1" md="2"></v-col>
+                                    <v-col cols="10" md="8">
                                         <v-text-field name="mail" id="mailLog" v-model="mail" label="E-mail" :rules="emailRules" required>
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
                                 <v-row>
-                                    <v-col cols="1"></v-col>
-                                    <v-col cols="10">
+                                    <v-col cols="1" md="2"></v-col>
+                                    <v-col cols="10" md="8">
                                         <v-text-field  name="password" id="passLog" v-model="password" :type="show1 ? 'text' : 'password'" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" @click:append="show1 = !show1" label="Password" :rules="passRules" required>
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
                                 <v-row>
-                                    <v-col cols="1"></v-col>
-                                    <v-col cols="5">
+                                    <v-col cols="1" md="2"></v-col>
+                                    <v-col cols="5" md="4">
                                         <v-checkbox v-model="checkbox" :label="`Se souvenir de moi : ${checkbox.toString()}`"></v-checkbox>
                                         </v-checkbox>
                                     </v-col>
-                                    <v-col cols="5" class="pt-8">
-                                        Mot de passe perdu ?<br>
-                                        {{msg}}
+                                    <v-col cols="5" md="4" class="pt-8">
+                                        Mot de passe perdu ?<br> <!-- ici ajouter le lien de récupération du mot de passe -->
+                                        {{getLogDatas[0].password}} - {{getLogDatas[0].mail}}
                                     </v-col>
                                 </v-row>
                                 <v-row>
-                                    <v-col cols="1"></v-col>
-                                    <v-col cols="10 text-center">
-                                        <v-btn type="submit" color="success" elevation="6" large class="text-center font-weight-bold px-12 py-2" @click.once="sendValidation">
+                                    <v-col cols="2"></v-col>
+                                    <v-col cols="8 text-center">
+                                        <v-btn type="submit" color="success" elevation="6" large class="text-center font-weight-bold px-12 py-2" @click.once="sendValidation()">
                                         Valider
                                         </v-btn>
-                                        <v-alert color="light-green" class="mt-6" dense dark dismissible transition="scale-transition" v-if="validForm">
+                                        <v-alert color="light-green" class="mt-6" dense dark transition="scale-transition" v-if="validForm">
                                             <v-icon class="mr-4">mdi-check-circle</v-icon>
-                                            L'inscription est validée !<br>
+                                            Bienvenue sur Drawer Base !<br>
                                             <span class="ml-6">Redirection...</span> 
                                             <v-progress-circular indeterminate color="green" class="ml-6"></v-progress-circular>
                                         </v-alert>
-                                        <v-alert color="#C51162" class="mt-6" dense dark dismissible transition="scale-transition" v-if="errorForm">
-                                            Les informations entrées sont erronées. Réessayez.
+                                        <v-alert color="#C51162" class="mt-6" dense dark transition="scale-transition" v-if="errorForm">
+                                            {{errorMessage}}
                                         </v-alert>
                                     </v-col>
                                 </v-row>
                             </v-container>
-                        </v-form>
+                        </div>
                     </div>
                 </v-col>
+
             </v-row>
         </v-container>
     </div>
@@ -73,9 +77,6 @@ export default {
     name: 'LoginPoint',
     data() {
         return {
-            valid: false,
-            mail: '',
-            password: '',
             checkbox: true,
             show1: false,
             emailRules: [
@@ -88,34 +89,56 @@ export default {
             ],
             validForm: false,
             errorForm: false,
-            msg: '',
-            getLogData: '',
+            errorMessage: '',
+            validCount: 0,
+            getLogDatas: '',
         }
     },
     methods: {
         sendValidation() {
-            console.log("Le formulaire est activé")
-            const mailLog = document.getElementById('mailLog')
-            const passLog = document.getElementById('passLog')
-            //const messageForm = document.querySelector('#messageForm')
-            //console.log(messageForm)
+            //console.log("Le formulaire est activé")
+            const mail = document.getElementById('mailLog')
+            const pass = document.getElementById('passLog')
+            let mailLog = mail.value
+            let passLog = pass.value
 
             if(mailLog != '' && passLog != ''){
-                this.sendDatasLogin(mailLog.value, passLog.value);
-                if(mailLog.value == 'mike_walder@hotmail.fr' && passLog.value == '123456'){
-                    //this.$router.push('/dashboard')
+                // ici traitement entre le mail, password entré et les données de getLogDatas
+                
+                for(let i = 0; i < this.getLogDatas.length; i++){
+                    if(mailLog == this.getLogDatas[i].mail && passLog == this.getLogDatas[i].password){
+                        console.log("Vous êtes autorisé à entrer dans l'application !")
+                        this.validCount += 1
+                    }
+                }
+
+                if(this.validCount == 1){
                     this.validForm = true 
-                    //console.log("ValidForm est à " + this.validForm)
+                    this.$emit('availableLogin', {loginValidation: this.validForm})
+                    setTimeout(() => {
+                        this.validForm = false
+                        this.$router.push({name: "projet1"})
+                    }, 2000)
                     
-                    setTimeout(() => {this.$router.push('/dashboard')}, 2000)
-                }
-                else if(mailLog.value !== 'mike_walder@hotmail.fr' && passLog.value !== '123456') {
+                } else if (this.validCount == 0){
                     this.errorForm = true
-                    console.log(this.errorForm)
-                    setTimeout(() => {this.$router.push({path: '/'})}, 1500)
+                    this.errorMessage = 'Le mail et/ou le mot de passe est incorrect.Réessayez'
+                    setTimeout(() => {
+                        this.errorForm = false
+                        // reload the page (JS METHOD)
+                        window.location.reload()
+                    }, 2000)
                 }
+
             } else {
                 this.errorForm = true
+                this.errorMessage = 'Les champs renseignés sont vides.'
+                setTimeout(() => {
+                    this.errorForm = false
+                    // reload the page (JS METHOD)
+                    window.location.reload()
+                }, 2000)
+                
             }
         },
         /* async getResponse(){
@@ -130,23 +153,21 @@ export default {
                 console.error(err);
             });
         }, */
-        updateLoginTable() {
-            axios.get('/').then(function(response) {
-                this.login = response.data.login
-            }.bind(this))
-        },
-        async sendDatasLogin(mail, pass) {
-            console.log(mail + ' et ' + pass)
-            let dataLogin = {mailLog: mail, passLog: pass}
-            axios.post('http://localhost:5000/', dataLogin).then(function(response) {
-                this.updateLoginTable()
-            }.bind(this))
+        async getAllAccounts(){ // DATABASE
+            const path = 'http://localhost:5000/log';
+            await axios.get(path)
+            .then((res) => {
+                this.getLogDatas = res.data.logins;
+                console.log(this.getLogDatas)
+            })
+            .catch((err) => {
+                console.error(err);
+            });
         }
-
     },
-    /* created(){
-        this.getResponse();
-    } */
+    created(){
+        this.getAllAccounts();
+    }
 }
 </script>
 
@@ -154,5 +175,9 @@ export default {
 .form_part {
     height: 95vh !important;
     padding-top: 30vh;
+}
+.mainTitleAppli {
+    font-weight: bold !important;
+    text-shadow: 2px 2px 0px #d60, 2px 2px 2px #d60 !important;
 }
 </style>
