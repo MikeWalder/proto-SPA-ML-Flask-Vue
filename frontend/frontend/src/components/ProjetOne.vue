@@ -3,7 +3,7 @@
     <!-- Un simple projet<br>
     Datas : <span class="font-weight-bold">{{dictionnaire.type}}</span> -->
     <p class="display-3 font-weight-bold text-decoration-underline">Exemple d'API</p>
-    <v-form @submit.prevent="checkName" id="checkName" method="POST">
+    <v-form @submit.prevent="checkName" id="checkName" method="POST" action="/projet1">
         <v-container>
             <v-row>
                 <v-col
@@ -62,7 +62,9 @@ export default {
             console.log(this.nomVille)
             const path="http://localhost:5000/projet1/add"
             let villeData = {
-                ville: this.nomVille
+                ville: this.nomVille,
+                "Access-Control-Allow-Origin": true
+
             }
             axios.post(path, villeData)
             .then((resultat) => {

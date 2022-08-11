@@ -108,8 +108,30 @@ def dash():
 
 @app.route('/dashboard/get', methods=['GET'])
 def get_all():
-    logins = Login.query.order_by(Login.mail.asc()).limit(10).all()
+    logins = Login.query.order_by(Login.mail.asc()).all()
     return jsonify(logins=[login.get_dict() for login in logins])
+
+@app.route('/image', methods=['GET', 'POST'])
+def getImg():
+    response_object = {'status': 'success'}
+    response_object['log'] = 'Log successfully'
+    if request.method == 'POST':
+        json_data = request.get_json()
+        img = json_data.get('image')
+        response_object['img'] = img
+
+        # Image recognition part
+        url = 'https://api.imagga.com/v2/tags'
+        querystring = {"image_url":img}
+        headers = {
+            'accept': "application/json",
+            'authorization': "Basic YWNjXzJiMWVmN2ZiYjU1ZmNhMDo3YjJjZGUzYzIyNmMxZDMwNGY4MzhiNTRhOWJmODRlZg=="
+        }
+
+        """ response = requests.request("GET", url, header=headers, params=querystring)
+        data = json.loads(response.text.encode("ascii"))
+        response_object['data'] = data """
+    return jsonify(response_object)
 
 
 if __name__ == "__main__":

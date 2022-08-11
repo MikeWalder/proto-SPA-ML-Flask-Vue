@@ -9,11 +9,11 @@
       <v-card flat color="light-green lighten-5">
         <v-card-title color="light-green">
           <v-img
-          src="../src/assets/logo.png"
+          src="../src/assets/b_icon.png"
           contain
-          max-height="60" min-height="40" max-width="60" min-width="40">
+          max-height="50" min-height="40" max-width="50" min-width="40">
           </v-img>
-          DRAWER BASE
+          <span class="pt-6">DRAWER BASE</span>
           </v-card-title>
           <div v-if="!validateForm">
             <router-link to="/">
@@ -48,7 +48,10 @@
     </v-navigation-drawer>
 
     <v-app-bar app elevation="8" color="light-green lighten-5">
-      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon @click="drawer = !drawer">
+        <div v-if="drawer"><v-icon>mdi-backburger</v-icon></div>
+        <div v-if="!drawer"><v-icon>mdi-forwardburger</v-icon></div>
+      </v-app-bar-nav-icon>
       <v-toolbar-title>
         <v-container fluid class="fill-height">
           <!-- <span v-if="drawer">Replier le menu</span>
