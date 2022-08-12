@@ -117,20 +117,26 @@ def getImg():
     response_object['log'] = 'Log successfully'
     if request.method == 'POST':
         json_data = request.get_json()
-        img = json_data.get('image')
-        response_object['img'] = img
+        response_object['imageName'] = json_data.get('imageName')
+        response_object['imageSize'] = json_data.get('imageSize')
 
         # Image recognition part
         url = 'https://api.imagga.com/v2/tags'
-        querystring = {"image_url":img}
-        headers = {
-            'accept': "application/json",
-            'authorization': "Basic YWNjXzJiMWVmN2ZiYjU1ZmNhMDo3YjJjZGUzYzIyNmMxZDMwNGY4MzhiNTRhOWJmODRlZg=="
-        }
+        #querystring = {"image_url":img}
+        
 
         """ response = requests.request("GET", url, header=headers, params=querystring)
         data = json.loads(response.text.encode("ascii"))
         response_object['data'] = data """
+    return jsonify(response_object)
+
+@app.route('/image/url', methods=['GET', 'POST'])
+def imgUrl():
+    response_object = {'status': 'success'}
+    response_object['log'] = 'Log successfully'
+    if request.method == 'POST':
+        json_data = request.get_json()
+        response_object['imageURL'] = json_data.get('imageURL')
     return jsonify(response_object)
 
 
