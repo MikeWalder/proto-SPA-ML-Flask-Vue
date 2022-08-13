@@ -136,8 +136,16 @@ def imgUrl():
     response_object['log'] = 'Log successfully'
     if request.method == 'POST':
         json_data = request.get_json()
-        response_object['imageURL'] = json_data.get('imageURL')
-    return jsonify(response_object)
+        image_url = json_data.get('imageURL') # URL de l'image
+        url = "https://api.imagga.com/v2/categories/personal_photos"
+        querystring = {"image_url":image_url}
+        headers = {
+            'accept': "application/json",
+            'authorization': "Basic YWNjXzJiMWVmN2ZiYjU1ZmNhMDo3YjJjZGUzYzIyNmMxZDMwNGY4MzhiNTRhOWJmODRlZg=="
+        }
+        response = requests.request("GET", url, headers=headers, params=querystring)
+        response_object['response_text'] = response.text
+    return response_object
 
 
 if __name__ == "__main__":

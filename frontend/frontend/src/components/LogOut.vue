@@ -1,7 +1,7 @@
 <template>
     <div class="img text-center">
         <!-- <p class="mt-16 font-weight-bold">Ceci est la page de déconnexion de l'application</p> -->
-        <p class="mt-16 font-weight-bold">Uploadez depuis votre PC ou entrez l'URL :</p>
+        <p class="mt-16 font-weight-bold display-1">Uploadez depuis votre PC ou entrez l'URL :</p>
                 
                 <v-container>
                     
@@ -74,6 +74,9 @@
                             :rules="rules" 
                             @change="imgUpload()">
                             </v-text-field>
+                            <div class="rend" v-if="validateImgUrl">
+                                <span color="text-green subtitle-1">Extension de fichier valide !</span> 
+                            </div>
                         </v-col>
                         <v-col 
                         cols="1"
@@ -91,6 +94,12 @@
                         >
                             <div id="imageRenderURL">
                                 <img id="blahblah" v-if="urlString !== null" :src=urlString>
+                            </div>
+                            <div class="redux">
+                                <div v-if="res !== ''">
+                                    Catégorie : {{resJSON.result.categories[0].name.en}}
+                                    <p>Précision : {{(resJSON.result.categories[0].confidence).toPrecision(4)}} %</p>
+                                </div>
                             </div>
                         </v-col>
                         <v-col 
@@ -116,13 +125,14 @@ export default {
                 value => !value || value.size < 2000000 || "La taille est supérieure à 2 MB",
             ],
             res: '',
+            resJSON: null,
             urlString: null,
             rules: [
                 (value) => !!value || "Required.",
                 (value) => this.isURL(value) || "URL is not valid",
             ],
-            alertImgUrl: '',
             validateImgUrl: false,
+            errorValidImageURL: false,
         }
     },
     methods: {
@@ -136,7 +146,7 @@ export default {
             axios.post(path, imgDatas)
             .then(res => {
                 this.res = res.data
-                console.log(this.res)
+                console.log(this.res.response_text)
                 })
             .catch(err => {console.log(err)});
         },
@@ -154,7 +164,7 @@ export default {
         imgUpload() {
             console.log(this.urlString)
             if(this.urlString.match(/\.(jpeg|jpg|png)$/)){
-                this.alertImgUrl = "Cette extension de fichier peut être traitée."
+                //this.alertImgUrl = "Extension de fichier valide"
                 this.validateImgUrl = true
                 console.log(this.alertImgUrl)
                 // on lance la reconnaissance d'image
@@ -166,12 +176,16 @@ export default {
                 axios.post(path, imgDatas)
                 .then(res => { // Récupération des données
                     this.res = res.data
-                    console.log(this.res)
+                    console.log(this.res.response_text)
+                    this.resJSON = JSON.parse(this.res.response_text)
+                    //console.log(this.resJSON.result.categories[0].name.en)
+                    //console.log(this.resJSON.result.categories[0].confidence)
                     })
                 .catch(err => {console.log(err)});
             }
             else {
-                console.log("L'extension est invalide !!!")
+                console.log("Format d'image invalide !")
+                this.errorValidImageURL = true
             }
         },
         
