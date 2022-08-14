@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import json
 import requests
 from flask_cors import CORS
+from input import *
 
 # configuration
 DEBUG = True
@@ -124,10 +125,6 @@ def getImg():
         url = 'https://api.imagga.com/v2/tags'
         #querystring = {"image_url":img}
         
-
-        """ response = requests.request("GET", url, header=headers, params=querystring)
-        data = json.loads(response.text.encode("ascii"))
-        response_object['data'] = data """
     return jsonify(response_object)
 
 @app.route('/image/url', methods=['GET', 'POST'])
@@ -141,7 +138,7 @@ def imgUrl():
         querystring = {"image_url":image_url}
         headers = {
             'accept': "application/json",
-            'authorization': "Basic YWNjXzJiMWVmN2ZiYjU1ZmNhMDo3YjJjZGUzYzIyNmMxZDMwNGY4MzhiNTRhOWJmODRlZg=="
+            'authorization': SECRET_ACCOUNT_KEY
         }
         response = requests.request("GET", url, headers=headers, params=querystring)
         response_object['response_text'] = response.text

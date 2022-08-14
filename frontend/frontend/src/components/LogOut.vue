@@ -72,10 +72,14 @@
                             v-model="urlString" 
                             placeholder="https://exemple.com" 
                             :rules="rules" 
+                            :hint="alertImgURL"
                             @change="imgUpload()">
                             </v-text-field>
                             <div class="rend" v-if="validateImgUrl">
-                                <span color="text-green subtitle-1">Extension de fichier valide !</span> 
+                                <span color="green-text subtitle-1">{{alertImgURL}}</span> 
+                            </div>
+                            <div class="rend" v-if="errorValidImageURL">
+                                <span color="green-text subtitle-1 py-0 my-0">{{alertImgURL}}</span> 
                             </div>
                         </v-col>
                         <v-col 
@@ -85,26 +89,36 @@
                     </v-row>
                     <v-row>
                         <v-col 
-                        cols="1"
-                        md="4"
+                        cols="0"
+                        md="2"
                         ></v-col>
                         <v-col 
-                        cols="10"
+                        cols="12"
                         md="4"
                         >
                             <div id="imageRenderURL">
                                 <img id="blahblah" v-if="urlString !== null" :src=urlString>
-                            </div>
-                            <div class="redux">
-                                <div v-if="res !== ''">
-                                    Catégorie : {{resJSON.result.categories[0].name.en}}
-                                    <p>Précision : {{(resJSON.result.categories[0].confidence).toPrecision(4)}} %</p>
+                            
+                                <div class="redux">
+                                    <div v-if="res !== ''">
+                                        Catégorie : {{resJSON.result.categories[0].name.en}}
+                                        <p>Précision : {{(resJSON.result.categories[0].confidence).toPrecision(4)}} %</p>
+                                    </div>
                                 </div>
                             </div>
                         </v-col>
                         <v-col 
-                        cols="1"
+                        cols="12"
                         md="4"
+                        >
+                            <div class="text-center">
+                                <canvas id="myChart"></canvas>
+                            </div>
+
+                        </v-col>
+                        <v-col 
+                        cols="0"
+                        md="2"
                         ></v-col>
                     </v-row>
                 </v-container>
@@ -126,6 +140,9 @@ export default {
             ],
             res: '',
             resJSON: null,
+            resultLabels: [],
+            resultProportions: [],
+            myChart: null,
             urlString: null,
             rules: [
                 (value) => !!value || "Required.",
@@ -133,6 +150,7 @@ export default {
             ],
             validateImgUrl: false,
             errorValidImageURL: false,
+            alertImgURL: '',
         }
     },
     methods: {
@@ -161,14 +179,72 @@ export default {
 
             return url.protocol === "http:" || url.protocol === "https:";
         },
+        chartApiDatas() {
+
+            // Vérifier si un chart existe déjà, auquel cas le détruire
+            console.log(this.myChart)
+            if(this.myChart !== null) {
+                this.myChart.destroy();
+            }
+            const labels = this.resultLabels;
+            const data = {
+                labels: labels,
+                datasets: [{
+                    label: 'Classification de l\'image',
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 205, 86)'
+                    ],
+                    borderColor: 'rgb(255, 255, 255)',
+                    borderWidth: 5,
+                    data: this.resultProportions,
+                }]
+            };
+
+            const config = {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: 'rgb(255, 99, 132)'
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Résultat par catégorie et pourcentage'
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                }
+            };
+
+            let myChart = new Chart(
+                document.getElementById('myChart'),
+                config
+            );
+            this.myChart = myChart
+
+            return myChart
+        },
         imgUpload() {
             console.log(this.urlString)
+            this.alertImgURL = ''
+            this.resultLabels = []
+            this.resultProportions = []
             if(this.urlString.match(/\.(jpeg|jpg|png)$/)){
-                //this.alertImgUrl = "Extension de fichier valide"
+
                 this.validateImgUrl = true
+                this.alertImgURL = 'Extension d\'image valide'
                 console.log(this.alertImgUrl)
-                // on lance la reconnaissance d'image
-                // 1) Requête Axios
+
+                // Requête Axios
                 const path = 'http://localhost:5000/image/url'
                 let imgDatas = {
                     imageURL: this.urlString,
@@ -178,14 +254,26 @@ export default {
                     this.res = res.data
                     console.log(this.res.response_text)
                     this.resJSON = JSON.parse(this.res.response_text)
+                    // Insertion des données dans des tableaux 
+                    let count = this.resJSON.result.categories.length
+                    if(count > 3){
+                        count = 3
+                    }
+                    for(let i = 0; i < count; i++){
+                        this.resultLabels[i] = this.resJSON.result.categories[i].name.en
+                        this.resultProportions[i] = (this.resJSON.result.categories[i].confidence)
+                    }
+                    console.log(this.resultProportions)
+                    this.chartApiDatas();
                     //console.log(this.resJSON.result.categories[0].name.en)
                     //console.log(this.resJSON.result.categories[0].confidence)
                     })
                 .catch(err => {console.log(err)});
             }
             else {
-                console.log("Format d'image invalide !")
+                console.log("F")
                 this.errorValidImageURL = true
+                this.alertImgURL = "Format d'image invalide"
             }
         },
         
@@ -194,25 +282,27 @@ export default {
 </script>
 
 <style>
-/* #imageRender {
-    width: 220px !important;
-    height: 220px !important;
-    margin: 0 auto !important;
-} */
+#imageRenderURL {
+    display: inline-block !important;
+    vertical-align: middle !important;
+    margin: auto 0 !important;
+}
 
 #imageRender img, #imageRenderURL img {
-    max-width: 200px !important;
-    max-height: 200px !important;
-    min-height: 150px !important;
+    max-width: 500px !important;
+    max-height: 500px !important;
+    min-height: 450px !important;
+    min-width: 450 px !important;
     width: auto !important;
     height: auto !important;
-    margin: 0 auto !important;
+    margin: auto !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
 }
 
 img {
     display: none !important;
     text-align: center !important;
-    
     opacity: 0 !important;
     transition: all 0.4s ease-in !important;
 }
@@ -221,7 +311,18 @@ img[src] {
     display: block !important;
     opacity: 1 !important;
 }
+
 .imgRender {
-    text-align: center;
+    text-align: center !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+}
+
+#myChart {
+    height: 500px !important;
+    min-height: 250px !important;
+    width: 500px !important;
+    min-width: 300px !important;
+    margin: 0 auto !important;
 }
 </style>
