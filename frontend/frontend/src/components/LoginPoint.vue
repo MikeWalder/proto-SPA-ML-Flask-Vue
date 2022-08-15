@@ -41,7 +41,7 @@
                                     </v-col>
                                     <v-col cols="5" md="4" class="pt-8">
                                         Mot de passe perdu ?<br> <!-- ici ajouter le lien de récupération du mot de passe -->
-                                        {{getLogDatas[0].password}} - {{getLogDatas[0].mail}}
+                                        <!-- {{getLogDatas[0].password}} - {{getLogDatas[0].mail}} -->
                                     </v-col>
                                 </v-row>
                                 <v-row>
