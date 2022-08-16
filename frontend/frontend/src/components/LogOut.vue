@@ -1,34 +1,30 @@
 <template>
-   <div class="text-center pt-8">
-    <!-- Un simple projet<br>
-    Datas : <span class="font-weight-bold">{{dictionnaire.type}}</span> -->
-    <p class="display-3 font-weight-bold text-decoration-underline">Exemple d'API</p>
-    <v-form @submit.prevent="checkName" id="checkName" method="POST" action="/projet1">
-        <v-container>
-            <v-row>
-                <v-col
-                cols="12"
-                md="4"
-                ></v-col>
-                </v-col>
-                <v-col
-                cols="12"
-                md="4"
-                >
-                <v-text-field
-                    v-model="nomVille"
-                    label="Nom de la ville"
-                    name="ville"
-                    required
-                ></v-text-field>
-                </v-col>
-            </v-row>
-            <v-btn type="submit" color="success" form="checkName">Rechercher</v-btn>
-        </v-container>
-
-    </v-form>
-
-   </div>
+    <div class="text-center pt-8">
+        <p class="display-3 font-weight-bold text-decoration-underline">Exemple d'API</p>
+            <v-form @submit.prevent="checkName" id="checkName" method="POST" action="/projet1">
+                <v-container>
+                    <v-row>
+                        <v-col
+                        cols="12"
+                        md="4"
+                        ></v-col>
+                        </v-col>
+                        <v-col
+                        cols="12"
+                        md="4"
+                        >
+                        <v-text-field
+                            v-model="nomVille"
+                            label="Nom de la ville"
+                            name="ville"
+                            required
+                        ></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <v-btn type="submit" color="success" form="checkName">Rechercher</v-btn>
+                </v-container>
+            </v-form>
+    </div>
 </template>
 
 
@@ -37,7 +33,7 @@
 import axios from 'axios';
 
 export default {
-    name: 'projet1', 
+    name: 'logout', 
     data() {
         return {
             msg: "This is the projet page",

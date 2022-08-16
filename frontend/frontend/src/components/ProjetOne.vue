@@ -56,7 +56,7 @@
                     <v-btn color="success" elevation="12" @click="getImageRecognition()" class=" mx-0my-12">Informations</v-btn>
                 
                 </v-container>
-                    <hr class="my-2">
+                    <v-divider></v-divider>
                 <v-container>
                     <v-row>
                         <v-col 
@@ -76,10 +76,10 @@
                             @change="imgUpload()">
                             </v-text-field>
                             <div class="rend" v-if="validateImgUrl">
-                                <span color="green-text subtitle-1">{{alertImgURL}}</span> 
+                                <v-subheader>{{alertImgURL}}</v-subheader>
                             </div>
                             <div class="rend" v-if="errorValidImageURL">
-                                <span color="green-text subtitle-1 py-0 my-0">{{alertImgURL}}</span> 
+                                <v-subheader>{{alertImgURL}}</v-subheader>
                             </div>
                         </v-col>
                         <v-col 

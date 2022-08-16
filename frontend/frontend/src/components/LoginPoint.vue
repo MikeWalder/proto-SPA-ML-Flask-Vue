@@ -1,13 +1,14 @@
 <template>
     <div id="loginAccount">
         <v-container>
-            <v-row no-gutters>
+            <v-row>
                 <v-col offset-sm="0" md="6">
                     <v-img
                     src="../../public/computer-mouse-in-action.jpg"
                     aspect-ratio="1.3"
                     height="100vh"
-                    transition="scroll-x-transition"
+                    transition="scale-transition"
+                    origin="center center"
                     >
                     </v-img>
                 </v-col>
@@ -36,12 +37,11 @@
                                 <v-row>
                                     <v-col cols="1" md="2"></v-col>
                                     <v-col cols="5" md="4">
-                                        <v-checkbox v-model="checkbox" :label="`Se souvenir de moi : ${checkbox.toString()}`"></v-checkbox>
+                                        <v-checkbox v-model="checkbox" @click="rememberAccount()" :label="`Se souvenir de moi : ${checkbox.toString()}`"></v-checkbox>
                                         </v-checkbox>
                                     </v-col>
                                     <v-col cols="5" md="4" class="pt-8">
-                                        Mot de passe perdu ?<br> <!-- ici ajouter le lien de récupération du mot de passe -->
-                                        <!-- {{getLogDatas[0].password}} - {{getLogDatas[0].mail}} -->
+                                        <span @click="redirectPasswordForgot()">Mot de passe perdu ?</span> 
                                     </v-col>
                                 </v-row>
                                 <v-row>
@@ -77,7 +77,7 @@ export default {
     name: 'LoginPoint',
     data() {
         return {
-            checkbox: true,
+            checkbox: false,
             show1: false,
             emailRules: [
                 v => !!v || 'E-mail est requis',
@@ -141,18 +141,6 @@ export default {
                 
             }
         },
-        /* async getResponse(){
-            const path = 'http://localhost:5000/';
-            await axios.get(path)
-            .then((res) => {
-                console.log(res.data)
-                this.msg = res.data.cardDatas.data[0].desc;
-                console.log(this.msg)
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-        }, */
         async getAllAccounts(){ // DATABASE
             const path = 'http://localhost:5000/log';
             await axios.get(path)
@@ -163,7 +151,24 @@ export default {
             .catch((err) => {
                 console.error(err);
             });
-        }
+        },
+        rememberAccount(){
+            if(this.checkbox){
+                console.log("Les informations sont enregistrées")
+                this.$cookie.set('connexion', 'Hello', 1);
+            } else {
+                console.log("On ne se souviendra pas de toi !")
+                if(this.$cookie.get('connexion')) {
+                    this.$cookie.delete('connexion')
+                } else {
+                    console.log("Il n'y a plus de cookie")
+                }
+            }
+        },
+        redirectPasswordForgot() {
+            //this.$router.push({name: "logout"})
+            console.log("On se souvient de toi !")
+        },
     },
     created(){
         this.getAllAccounts();
