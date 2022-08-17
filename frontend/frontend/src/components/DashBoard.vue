@@ -58,8 +58,5 @@ export default {
             }
         }
     },
-    /* created(){
-        this.getReponse();
-    } */
 }
 </script>

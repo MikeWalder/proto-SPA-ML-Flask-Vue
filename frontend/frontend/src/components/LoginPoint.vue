@@ -2,7 +2,7 @@
     <div id="loginAccount">
         <v-container>
             <v-row>
-                <v-col offset-sm="0" md="6">
+                <v-col offset-sm="0" md="6" class="hidden-sm-and-down">
                     <v-img
                     src="../../public/computer-mouse-in-action.jpg"
                     aspect-ratio="1.3"
@@ -20,6 +20,7 @@
 
                         <div>
                             <v-container>
+
                                 <v-row>
                                     <v-col cols="1" md="2"></v-col>
                                     <v-col cols="10" md="8">
@@ -27,6 +28,7 @@
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
+
                                 <v-row>
                                     <v-col cols="1" md="2"></v-col>
                                     <v-col cols="10" md="8">
@@ -34,16 +36,21 @@
                                         </v-text-field>
                                     </v-col>
                                 </v-row>
-                                <v-row>
-                                    <v-col cols="1" md="2"></v-col>
-                                    <v-col cols="5" md="4">
-                                        <v-checkbox v-model="checkbox" @click="rememberAccount()" :label="`Se souvenir de moi : ${checkbox.toString()}`"></v-checkbox>
+
+                                <v-row align="center" justify="center">
+                                    <v-col cols="0" md="2"></v-col>
+                                    <v-col cols="6" md="4">
+                                        <v-checkbox v-model="checkbox" @click="rememberAccount()" id="accountCookie" :label="`Se souvenir de moi : ${checkbox.toString()}`">
                                         </v-checkbox>
                                     </v-col>
-                                    <v-col cols="5" md="4" class="pt-8">
-                                        <span @click="redirectPasswordForgot()">Mot de passe perdu ?</span> 
+                                    <v-col cols="6" md="4">
+                                        <v-list-item to="/recover" @click="redirectPasswordForgot()" id="passForget">
+                                            Mot de passe perdu ?
+                                            <router-view />
+                                        </v-list-item> 
                                     </v-col>
                                 </v-row>
+
                                 <v-row>
                                     <v-col cols="2"></v-col>
                                     <v-col cols="8 text-center">
@@ -61,6 +68,7 @@
                                         </v-alert>
                                     </v-col>
                                 </v-row>
+
                             </v-container>
                         </div>
                     </div>
@@ -107,13 +115,15 @@ export default {
                 
                 for(let i = 0; i < this.getLogDatas.length; i++){
                     if(mailLog == this.getLogDatas[i].mail && passLog == this.getLogDatas[i].password){
-                        console.log("Vous êtes autorisé à entrer dans l'application !")
+                        //console.log("Vous êtes autorisé à entrer dans l'application !")
                         this.validCount += 1
                     }
                 }
 
                 if(this.validCount == 1){
                     this.validForm = true 
+                    this.$cookies.set('mail', mailLog, 1);
+                    this.$cookies.set('pass', passLog, 1);
                     this.$emit('availableLogin', {loginValidation: this.validForm})
                     setTimeout(() => {
                         this.validForm = false
@@ -122,7 +132,7 @@ export default {
                     
                 } else if (this.validCount == 0){
                     this.errorForm = true
-                    this.errorMessage = 'Le mail et/ou le mot de passe est incorrect.Réessayez'
+                    this.errorMessage = 'Le mail et/ou le mot de passe est incorrect. Réessayez'
                     setTimeout(() => {
                         this.errorForm = false
                         // reload the page (JS METHOD)
@@ -152,22 +162,22 @@ export default {
                 console.error(err);
             });
         },
-        rememberAccount(){
+        rememberAccount(){ // Partie cookie 
             if(this.checkbox){
-                console.log("Les informations sont enregistrées")
-                this.$cookie.set('connexion', 'Hello', 1);
-            } else {
+                //console.log("Les informations sont enregistrées")
+                this.$cookies.set('connexion', 'Hello', 1);
+                console.log(this.$cookies.get('connexion'))
+            } else if(this.checkbox == false){
                 console.log("On ne se souviendra pas de toi !")
-                if(this.$cookie.get('connexion')) {
-                    this.$cookie.delete('connexion')
-                } else {
-                    console.log("Il n'y a plus de cookie")
-                }
+                this.$cookies.remove("connexion")
+                this.$cookies.remove("mail")
+                this.$cookies.remove("pass")
+                console.log(this.$cookies.get('connexion'))
             }
         },
         redirectPasswordForgot() {
-            //this.$router.push({name: "logout"})
-            console.log("On se souvient de toi !")
+            console.log("Redirection vers la partie récupération du mot de passe")
+            this.$router.push({name: "recover"})
         },
     },
     created(){
@@ -184,5 +194,12 @@ export default {
 .mainTitleAppli {
     font-weight: bold !important;
     text-shadow: 2px 2px 0px #d60, 2px 2px 2px #d60 !important;
+}
+
+#accountCookie:hover, #passForget:hover {
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.4s ease-in-out;
 }
 </style>

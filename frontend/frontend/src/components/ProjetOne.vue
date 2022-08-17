@@ -1,7 +1,7 @@
 <template>
     <div class="img text-center">
         <!-- <p class="mt-16 font-weight-bold">Ceci est la page de déconnexion de l'application</p> -->
-        <p class="mt-16 font-weight-bold display-1">Uploadez depuis votre PC ou entrez l'URL :</p>
+        <p class="mt-16 font-weight-bold" id="titleProjet">Uploadez une image depuis votre PC ou entrez l'URL :</p>
                 
                 <v-container>
                     
@@ -43,7 +43,7 @@
                         accept="image/png, image/jpeg, image/jpg"
                         prepend-icon="mdi-camera"
                         name="imageTest"
-                        onchange="document.getElementById('blah').src = window.URL.createObjectURL(this.files[0])"
+                        onchange="(document.getElementById('blah').src = window.URL.createObjectURL(this.files[0]))"
                         ></v-file-input>
                         </v-col>
 
@@ -56,7 +56,9 @@
                     <v-btn color="success" elevation="12" @click="getImageRecognition()" class=" mx-0my-12">Informations</v-btn>
                 
                 </v-container>
-                    <v-divider></v-divider>
+
+                    <v-divider class="my-4"></v-divider>
+
                 <v-container>
                     <v-row>
                         <v-col 
@@ -130,7 +132,7 @@
 <script>
 import axios from 'axios';
 export default {
-    name: 'LogOut', 
+    name: 'projet1', 
     data() {
         return {
             imgURL: null,
@@ -145,15 +147,20 @@ export default {
             myChart: null,
             urlString: null,
             rules: [
-                (value) => !!value || "Lien URL de l'image requis",
-                (value) => this.isURL(value) || "L'URL n'est pas valide",
+                (value) => !!value || "URL requis",
+                (value) => this.isURL(value) || "URL invalide",
             ],
             validateImgUrl: false,
             errorValidImageURL: false,
             alertImgURL: '',
+            srcImagePc: '',
         }
     },
     methods: {
+        refreshImage() {
+            this.srcImagePc = document.getElementById("blah").srcImagePc
+            console.log(this.srcImagePc)
+        },
         async getImageRecognition() {
             const path = 'http://localhost:5000/image'
             let imgDatas = {
@@ -282,6 +289,10 @@ export default {
 </script>
 
 <style>
+#titleProjet {
+    font-size: 30px !important;
+}
+
 #imageRenderURL {
     display: inline-block !important;
     vertical-align: middle !important;
@@ -327,12 +338,16 @@ img[src] {
 }
 .v-main__wrap {
     background-image: url('../../public/grid_project.jpg') !important;
+    background-size: cover !important;
 }
 
 @media only screen and (max-width: 920px) {
     .v-main__wrap {
         background-image: none !important;
         background-color: #e5e5e5 !important;
+    }
+    #titleProjet {
+        font-size: 20px !important;
     }
 }
 </style>

@@ -120,12 +120,13 @@ def getImg():
         json_data = request.get_json()
         response_object['imageName'] = json_data.get('imageName')
         response_object['imageSize'] = json_data.get('imageSize')
-
-        # Image recognition part
-        url = 'https://api.imagga.com/v2/tags'
-        #querystring = {"image_url":img}
-        
     return jsonify(response_object)
+
+@app.route('/recover', methods=['GET', 'POST'])
+def recover():
+    response_object = {'status': 'success'}
+    response_object['log'] = 'Log successfully'
+    return response_object
 
 @app.route('/image/url', methods=['GET', 'POST'])
 def imgUrl():

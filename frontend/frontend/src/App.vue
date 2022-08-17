@@ -6,8 +6,8 @@
       app
       color="light-green lighten-5"
     >
-      <v-card flat color="light-green lighten-5">
-        <v-card-title color="light-green">
+      <v-card flat color="light-green lighten-5" no-gutters>
+        <v-card-title color="light-green mt-0 pt-0">
           <v-img
           src="../src/assets/b_icon.png"
           contain
@@ -23,13 +23,16 @@
                 <span class="font-weight-bold overline item-nav my-3">Connexion</span>
             </router-link> <br class="my-3">
           </div>
+
           <div v-if="validateForm">
-            <router-link to="/logout">
+
+              <router-link to="/logout">
                 <v-icon class="mx-4">
                     mdi-logout-variant
                 </v-icon>
                 <span class="font-weight-bold overline item-nav my-3">Déconnexion</span>
-            </router-link> <br class="my-3">
+              </router-link><br class="my-3">
+            
             <router-link to="/projet1">
               <v-icon class="mx-4">
                   mdi-account
@@ -42,7 +45,9 @@
               </v-icon>
               <span class="font-weight-bold overline item-nav my-4">Tableau de bord</span>
             </router-link>
+
           </div>
+
       </v-card>
 
     </v-navigation-drawer>
@@ -54,8 +59,7 @@
       </v-app-bar-nav-icon>
       <v-toolbar-title>
         <v-container fluid class="fill-height">
-          <!-- <span v-if="drawer">Replier le menu</span>
-          <span v-if="!drawer">Déplier le menu</span> -->
+          
         </v-container>
       </v-toolbar-title>
     </v-app-bar>
@@ -76,12 +80,16 @@ export default {
   data: () => ({
     drawer: null,
     validateForm: false,
+    dialog: false,
   }),
   methods: {
     enableLogin(payload){
       console.log(payload.loginValidation)
       this.validateForm = payload.loginValidation;
       console.log(this.validateForm);
+    },
+    disconnectAccount(){
+      
     }
   },
 };
@@ -96,5 +104,8 @@ export default {
     color: blue;
     background-color: rgb(119, 191, 119);
     transition: all 0.4s;
+}
+.custom-dialog {
+  align-self: flex-start !important;
 }
 </style>
