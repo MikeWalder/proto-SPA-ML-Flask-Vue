@@ -123,8 +123,8 @@ export default {
                 if(this.validCount == 1){
                     this.validForm = true 
                     this.$cookies.set('mail', mailLog, 1);
-                    this.$cookies.set('pass', passLog, 1);
                     this.$emit('availableLogin', {loginValidation: this.validForm})
+                    rememberAccount();
                     setTimeout(() => {
                         this.validForm = false
                         this.$router.push({name: "projet1"})
@@ -132,7 +132,7 @@ export default {
                     
                 } else if (this.validCount == 0){
                     this.errorForm = true
-                    this.errorMessage = 'Le mail et/ou le mot de passe est incorrect. Réessayez'
+                    this.errorMessage = 'E-mail et/ou mot de passe incorrect. Réessayez'
                     setTimeout(() => {
                         this.errorForm = false
                         // reload the page (JS METHOD)
@@ -164,15 +164,11 @@ export default {
         },
         rememberAccount(){ // Partie cookie 
             if(this.checkbox){
-                //console.log("Les informations sont enregistrées")
                 this.$cookies.set('connexion', 'Hello', 1);
-                console.log(this.$cookies.get('connexion'))
+                this.$cookies.set('mail', 'oui', 1);
             } else if(this.checkbox == false){
-                console.log("On ne se souviendra pas de toi !")
                 this.$cookies.remove("connexion")
                 this.$cookies.remove("mail")
-                this.$cookies.remove("pass")
-                console.log(this.$cookies.get('connexion'))
             }
         },
         redirectPasswordForgot() {

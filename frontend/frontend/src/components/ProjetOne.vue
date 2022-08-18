@@ -283,9 +283,17 @@ export default {
                 this.alertImgURL = "Format d'image invalide"
             }
         },
-        
-    }
+        verifyConnection() {
+            if(this.$cookies.isKey("connexion")){
+                console.log("Le cookie est existant")
+            }
+        },
+    },
+    beforeMount() {
+        this.verifyConnection()
+    },
 }
+
 </script>
 
 <style>

@@ -71,15 +71,13 @@ export default {
             }).catch(err => {console.log(err)});
         },
         disconnectionAccount(){
-            console.log("On se déconnecte !")
             this.validateForm = false
             this.$emit('availableLogin', {loginValidation: this.validateForm})
             this.$cookies.remove('mail')
-            this.$cookies.remove('pass')
             this.$cookies.remove('connexion')
             setTimeout( () => {
                 this.$router.push({name: "login"})
-            }, 5000)
+            }, 2000)
         },
     },
     created() {
