@@ -16,7 +16,8 @@
           <span class="pt-6">DRAWER BASE</span>
         </v-card-title>
         <v-divider class="mt-2"></v-divider>
-          <div v-if="!validateForm">
+        {{ this.$cookies.get('connexion') }}
+          <div v-if="!this.$store.state.validateForm">
             <br class="pt-8">
             <router-link to="/">
                 <v-icon class="mx-4">
@@ -26,27 +27,29 @@
             </router-link> <br class="my-3">
           </div>
 
-          <div v-if="validateForm">
+          <div v-if="this.$store.state.validateForm == true">
             <br class="pt-8">
             <router-link to="/logout">
               <v-icon class="mx-4">
                   mdi-logout-variant
               </v-icon>
               <span class="font-weight-bold overline item-nav my-3 navItem h3">Déconnexion</span>
-            </router-link><br class="my-4">
+            </router-link>
+            <br class="my-4">
             
             <router-link to="/projet1">
               <v-icon class="mx-4">
                   mdi-account
               </v-icon>
-              <span class="font-weight-bold overline item-nav my-3 navItem">Projet 1</span>
-            </router-link> <br class="my-6">
+              <span class="font-weight-bold overline item-nav my-4 navItem">Projet 1</span>
+            </router-link> 
+            <br class="my-4">
             
-            <router-link to="/dashboard">
+            <router-link to="/dashboard" class="py-2">
               <v-icon class="mx-4">
                   mdi-monitor-dashboard
               </v-icon>
-              <span class="font-weight-bold overline item-nav my-4 navItem">Tableau de bord</span>
+              <span class="font-weight-bold overline item-nav my-5 navItem">Tableau de bord</span>
             </router-link>
 
           </div>
@@ -82,7 +85,7 @@ export default {
   },
   data: () => ({
     drawer: null,
-    validateForm: false,
+    validateForm: this.$store.state.validateForm,
     dialog: false,
   }),
   methods: {
@@ -90,15 +93,20 @@ export default {
       console.log(payload.loginValidation)
       this.validateForm = payload.loginValidation;
       console.log(this.validateForm);
+      this.$cookies.set('connexion', this.validateForm, 1)
+      console.log(this.$cookies.isKey('connexion'))
     },
     verifyConnection(){
-      if (this.$cookies.isKey("connexion")) {
+      if (this.$cookies.isKey('connexion') === true) {
         this.validateForm == true;
+      } else {
+        this.validateForm == false;
       }
     }
   },
   created() {
     this.verifyConnection();
+    console.log(this.$cookies.isKey("connexion"))
   },
 };
 </script>

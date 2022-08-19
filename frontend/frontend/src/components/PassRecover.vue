@@ -9,7 +9,7 @@
 
         <v-row class="pt-8">
             <v-col cols="1" md="4"></v-col> 
-            <v-col>
+            <v-col col="10" md="4">
                 <v-form
                 ref="form"
                 v-model="valid"
@@ -41,6 +41,19 @@
             </v-col>
             <v-col cols="1" md="4"></v-col> 
         </v-row>
+
+        <v-row>
+            <v-col cols="1" md="4"></v-col> 
+            <v-col cols="10" md="4">
+                <v-alert color="light-red" class="mt-6" dense dark transition="scale-transition" v-if="validForm">
+                    <v-icon class="mr-4">mdi-check-circle</v-icon>
+                        Retour sur le site ...<br>
+                    <span class="ml-6">Redirection...</span> 
+                    <v-progress-circular indeterminate color="red" class="ml-6"></v-progress-circular>
+                </v-alert>
+            </v-col>
+            <v-col cols="1" md="4"></v-col> 
+        </v-row>
     </v-container>
 </template>
 
@@ -50,11 +63,17 @@ export default {
     name: 'recover',
     data() {
         return {
-
+            resetPass: false,
         }
     },
     methods: {
-        
+        resetRecupPass() {
+            this.resetPass = true
+            setTimeout(() => {
+                    this.$router.push({name: "projet1"})
+                }, 2000)
+            
+        },
     }
 }
 </script>

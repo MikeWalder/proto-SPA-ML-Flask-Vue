@@ -8,10 +8,15 @@ export default new Vuex.Store({
     return {
       count: 0,
       validating: false,
+      validateForm: document.cookie == "connexion",
     }
   },
   getters: {},
-  mutations: {},
+  mutations: {
+    addConnectionCookie() {
+      this.$store.state.validateForm = true
+    }
+  },
   actions: {},
   modules: {},
 });

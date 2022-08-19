@@ -12,6 +12,9 @@
             </li> 
         </ul>
         <div v-if="errorForm">Log is null !</div>
+        <p>
+            {{connectCookie}}
+        </p>
     </div>
 </template>
 
@@ -27,6 +30,7 @@ export default {
             res: '',
             resultLogins: '',
             errorForm: false,
+            connectCookie: null,
         }
     },
     methods: {
@@ -58,5 +62,16 @@ export default {
             }
         }
     },
+    created(){
+        this.connectCookie = this.$cookies.get('connexion')
+        console.log(this.connectCookie)
+    }
 }
 </script>
+
+<style>
+.v-main__wrap {
+    background-image: url('../../public/grid_project.jpg') !important;
+    background-size: cover !important;
+}
+</style>

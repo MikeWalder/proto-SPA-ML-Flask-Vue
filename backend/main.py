@@ -128,6 +128,23 @@ def recover():
     response_object['log'] = 'Log successfully'
     return response_object
 
+@app.route('/image/local', methods=['GET', 'POST'])
+def imgLocal():
+    response_object = {'status': 'success'}
+    response_object['log'] = 'Log successfully'
+    if request.method == 'POST':
+        json_data = request.get_json()
+        imageLocal = json_data.get('imageLocal')
+        url = "https://api.imagga.com/v2/categories/personal_photos"
+        querystring = {"image_url":imageLocal}
+        headers = {
+            'accept': "application/json",
+            'authorization': SECRET_ACCOUNT_KEY
+        }
+        response = requests.request("GET", url, headers=headers, params=querystring)
+        response_object['response_text'] = response.text
+    return response_object
+
 @app.route('/image/url', methods=['GET', 'POST'])
 def imgUrl():
     response_object = {'status': 'success'}

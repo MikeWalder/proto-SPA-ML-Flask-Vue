@@ -1,11 +1,11 @@
 <template>
     <div class="img text-center">
         <!-- <p class="mt-16 font-weight-bold">Ceci est la page de déconnexion de l'application</p> -->
-        <p class="mt-16 font-weight-bold" id="titleProjet">Uploadez une image depuis votre PC ou entrez l'URL :</p>
+        <p class="mt-16 font-weight-bold" id="titleProjet">Entrez l'URL d'une image</p>
                 
                 <v-container>
                     
-                    <v-row>
+                    <v-row v-if="resLocalJSON == true">
                         <v-col 
                         cols="1"
                         md="4"
@@ -24,7 +24,7 @@
                         ></v-col>
                     </v-row>
 
-                    <v-row>
+                    <v-row v-if="resLocalJSON == true">
                         <v-col
                         cols="2"
                         md="4"
@@ -43,8 +43,9 @@
                         accept="image/png, image/jpeg, image/jpg"
                         prepend-icon="mdi-camera"
                         name="imageTest"
-                        onchange="(document.getElementById('blah').src = window.URL.createObjectURL(this.files[0]))"
+                        onchange="(setTimeout(() => {document.getElementById('blah').src = window.URL.createObjectURL(this.files[0])}, 500))"
                         ></v-file-input>
+                        <br>
                         </v-col>
 
                         <v-col
@@ -53,11 +54,11 @@
                         >
                         </v-col>
                     </v-row>
-                    <v-btn color="success" elevation="12" @click="getImageRecognition()" class=" mx-0my-12">Informations</v-btn>
+                    <v-btn v-if="imgURL !== null" large color="success" elevation="12" @click="getImageRecognition()" class=" mx-0 my-4">Valider</v-btn>
                 
                 </v-container>
 
-                    <v-divider class="my-4"></v-divider>
+                    <v-divider class="my-4" v-if="resLocalJSON == true"></v-divider>
 
                 <v-container>
                     <v-row>
@@ -77,12 +78,12 @@
                             :hint="alertImgURL"
                             @change="imgUpload()">
                             </v-text-field>
-                            <div class="rend" v-if="validateImgUrl">
+                            <!-- <div class="rend" v-if="validateImgUrl">
                                 <v-subheader>{{alertImgURL}}</v-subheader>
                             </div>
                             <div class="rend" v-if="errorValidImageURL">
                                 <v-subheader>{{alertImgURL}}</v-subheader>
-                            </div>
+                            </div> -->
                         </v-col>
                         <v-col 
                         cols="1"
@@ -142,6 +143,7 @@ export default {
             ],
             res: '',
             resJSON: null,
+            resLocalJSON: null,
             resultLabels: [],
             resultProportions: [],
             myChart: null,
@@ -154,30 +156,30 @@ export default {
             errorValidImageURL: false,
             alertImgURL: '',
             srcImagePc: '',
+            selectedFile : null,
         }
     },
     methods: {
         refreshImage() {
-            this.srcImagePc = document.getElementById("blah").srcImagePc
-            console.log(this.srcImagePc)
+            this.srcImagePc = document.getElementById("blah").src
         },
-        async getImageRecognition() {
-            const path = 'http://localhost:5000/image'
+        getImageRecognition() {
+            const path = 'http://localhost:5000/image/local'
+            this.refreshImage()
+            console.log(this.srcImagePc)
             let imgDatas = {
-                imageName: this.imgURL.name,
-                imageSize: this.imgURL.size,
+                imageLocal: this.srcImagePc,
             }
-            //console.log(this.imgURL)
             axios.post(path, imgDatas)
-            .then(res => {
-                this.res = res.data
-                console.log(this.res.response_text)
+            .then(result => {
+                this.result = result.data
+                console.log(this.result.response_text)
+                this.resLocalJSON = JSON.parse(this.result.response_text)
                 })
             .catch(err => {console.log(err)});
         },
         isURL(str) {
             let url;
-
             try {
                 url = new URL(str);
             } catch (_) {
@@ -203,16 +205,17 @@ export default {
                         'rgb(54, 162, 235)',
                         'rgb(255, 205, 86)'
                     ],
-                    borderColor: 'rgb(255, 255, 255)',
-                    borderWidth: 5,
+                    borderColor: 'rgb(0, 0, 0)',
+                    borderWidth: 3,
                     data: this.resultProportions,
                 }]
             };
 
             const config = {
-                type: 'doughnut',
+                type: 'bar',
                 data: data,
                 options: {
+                    indexAxis: 'y',
                     responsive: true,
                     legend: {
                         display: true,
@@ -221,9 +224,18 @@ export default {
                             color: 'rgb(255, 99, 132)'
                         }
                     },
-                    title: {
-                        display: true,
-                        text: 'Résultat par catégorie et pourcentage'
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+
+                        },
+                        title: {
+                            display: true,
+                            text: 'Résultat par catégorie et pourcentage',
+                            font: {
+                                size: 16,
+                            },
+                        },
                     },
                     animation: {
                         animateScale: true,
@@ -248,6 +260,7 @@ export default {
             if(this.urlString.match(/\.(jpeg|jpg|png)$/)){
 
                 this.validateImgUrl = true
+                this.alertImgURL = ''
                 this.alertImgURL = 'Extension d\'image valide'
                 console.log(this.alertImgUrl)
 
@@ -278,7 +291,6 @@ export default {
                 .catch(err => {console.log(err)});
             }
             else {
-                console.log("F")
                 this.errorValidImageURL = true
                 this.alertImgURL = "Format d'image invalide"
             }
@@ -338,9 +350,9 @@ img[src] {
 }
 
 #myChart {
-    height: 500px !important;
-    min-height: 250px !important;
-    width: 500px !important;
+    height: auto !important;
+    min-height: 200px !important;
+    width: auto !important;
     min-width: 300px !important;
     margin: 0 auto !important;
 }

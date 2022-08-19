@@ -40,8 +40,9 @@
                                 <v-row align="center" justify="center">
                                     <v-col cols="0" md="2"></v-col>
                                     <v-col cols="6" md="4">
-                                        <v-checkbox v-model="checkbox" @click="rememberAccount()" id="accountCookie" :label="`Se souvenir de moi : ${checkbox.toString()}`">
+                                        <v-checkbox v-model="checkbox" @click="rememberAccount()" id="accountCookie" :label="`Se souvenir de moi`">
                                         </v-checkbox>
+                                        {{this.$store.state.validateForm}}
                                     </v-col>
                                     <v-col cols="6" md="4">
                                         <v-list-item to="/recover" @click="redirectPasswordForgot()" id="passForget">
@@ -103,6 +104,13 @@ export default {
         }
     },
     methods: {
+        rememberAccount(){ // Partie cookie 
+            if(this.checkbox == true){
+                this.$cookies.set('connexion', true, 1);
+            } else if(this.checkbox == false){
+                this.$cookies.remove('connexion')
+            }
+        },
         sendValidation() {
             //console.log("Le formulaire est activé")
             const mail = document.getElementById('mailLog')
@@ -122,11 +130,10 @@ export default {
 
                 if(this.validCount == 1){
                     this.validForm = true 
-                    this.$cookies.set('mail', mailLog, 1);
+                    this.$store.state.validateForm = true
+                    this.rememberAccount();
                     this.$emit('availableLogin', {loginValidation: this.validForm})
-                    rememberAccount();
                     setTimeout(() => {
-                        this.validForm = false
                         this.$router.push({name: "projet1"})
                     }, 2000)
                     
@@ -156,23 +163,14 @@ export default {
             await axios.get(path)
             .then((res) => {
                 this.getLogDatas = res.data.logins;
-                console.log(this.getLogDatas)
+                //console.log(this.getLogDatas)
             })
             .catch((err) => {
                 console.error(err);
             });
         },
-        rememberAccount(){ // Partie cookie 
-            if(this.checkbox){
-                this.$cookies.set('connexion', 'Hello', 1);
-                this.$cookies.set('mail', 'oui', 1);
-            } else if(this.checkbox == false){
-                this.$cookies.remove("connexion")
-                this.$cookies.remove("mail")
-            }
-        },
         redirectPasswordForgot() {
-            console.log("Redirection vers la partie récupération du mot de passe")
+            // console.log("Redirection vers la partie récupération du mot de passe")
             this.$router.push({name: "recover"})
         },
     },
