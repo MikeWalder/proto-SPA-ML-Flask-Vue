@@ -1,11 +1,6 @@
 <template>
   <v-app>
-
-    <v-navigation-drawer
-      v-model="drawer"
-      app
-      color="light-green lighten-5"
-    >
+    <v-navigation-drawer app v-model="drawer" color="light-green lighten-5">
       <v-card flat color="light-green lighten-5" class="ma-0" no-gutters>
         <v-card-title color="light-green" class="pa-0">
           <v-img
@@ -16,7 +11,7 @@
           <span class="pt-6">DRAWER BASE</span>
         </v-card-title>
         <v-divider class="mt-2"></v-divider>
-        {{ this.$cookies.get('connexion') }}
+        
           <div v-if="!this.$store.state.validateForm">
             <br class="pt-8">
             <router-link to="/">
@@ -27,7 +22,7 @@
             </router-link> <br class="my-3">
           </div>
 
-          <div v-if="this.$store.state.validateForm == true">
+          <div v-if="this.$store.state.validateForm">
             <br class="pt-8">
             <router-link to="/logout">
               <v-icon class="mx-4">
@@ -59,13 +54,13 @@
     </v-navigation-drawer>
 
     <v-app-bar app elevation="8" color="light-green lighten-5">
-      <v-app-bar-nav-icon @click="drawer = !drawer">
+      <v-app-bar-nav-icon @click="renderDrawer()">
         <div v-if="drawer"><v-icon>mdi-backburger</v-icon></div>
         <div v-if="!drawer"><v-icon>mdi-forwardburger</v-icon></div>
       </v-app-bar-nav-icon>
       <v-toolbar-title>
         <v-container fluid class="fill-height">
-          
+
         </v-container>
       </v-toolbar-title>
     </v-app-bar>
@@ -83,24 +78,30 @@ export default {
   components: {
     LoginPoint,
   },
-  data: () => ({
-    drawer: null,
-    validateForm: this.$store.state.validateForm,
-    dialog: false,
-  }),
+  data() {
+    return {
+      drawer: null,
+      validateForm: this.$store.state.validateForm,
+      dialog: false,
+    }
+  },
   methods: {
+    renderDrawer() {
+      this.drawer = !this.drawer;
+      console.log(this.drawer)
+    },
     enableLogin(payload){
       console.log(payload.loginValidation)
       this.validateForm = payload.loginValidation;
       console.log(this.validateForm);
-      this.$cookies.set('connexion', this.validateForm, 1)
+      this.$cookies.set('connexion', this.$store.state.validateForm, 1)
       console.log(this.$cookies.isKey('connexion'))
     },
     verifyConnection(){
-      if (this.$cookies.isKey('connexion') === true) {
-        this.validateForm == true;
+      if (this.$cookies.isKey("connexion") === true) {
+        this.$store.state.validateForm == true
       } else {
-        this.validateForm == false;
+        this.$store.state.validateForm == false
       }
     }
   },

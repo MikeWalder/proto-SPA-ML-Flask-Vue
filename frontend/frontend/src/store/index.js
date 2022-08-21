@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+/* import createPersistedState from "vuex-persistedstate"; */
 
 Vue.use(Vuex);
 
@@ -8,14 +9,13 @@ export default new Vuex.Store({
     return {
       count: 0,
       validating: false,
-      validateForm: document.cookie == "connexion",
+      validateForm: null,
+      validateCookie: null,
     }
   },
-  getters: {},
+  getters: {
+  },
   mutations: {
-    addConnectionCookie() {
-      this.$store.state.validateForm = true
-    }
   },
   actions: {},
   modules: {},

@@ -40,9 +40,8 @@
                                 <v-row align="center" justify="center">
                                     <v-col cols="0" md="2"></v-col>
                                     <v-col cols="6" md="4">
-                                        <v-checkbox v-model="checkbox" @click="rememberAccount()" id="accountCookie" :label="`Se souvenir de moi`">
+                                        <v-checkbox v-model="checkbox" id="accountCookie" :label="`Se souvenir de moi`">
                                         </v-checkbox>
-                                        {{this.$store.state.validateForm}}
                                     </v-col>
                                     <v-col cols="6" md="4">
                                         <v-list-item to="/recover" @click="redirectPasswordForgot()" id="passForget">
@@ -58,7 +57,7 @@
                                         <v-btn type="submit" color="success" elevation="6" large class="text-center font-weight-bold px-12 py-2" @click.once="sendValidation()">
                                         Valider
                                         </v-btn>
-                                        <v-alert color="light-green" class="mt-6" dense dark transition="scale-transition" v-if="validForm">
+                                        <v-alert color="light-green" class="mt-6" dense dark transition="scale-transition" v-if="validAlertForm">
                                             <v-icon class="mr-4">mdi-check-circle</v-icon>
                                             Bienvenue sur Drawer Base !<br>
                                             <span class="ml-6">Redirection...</span> 
@@ -87,7 +86,7 @@ export default {
     data() {
         return {
             checkbox: false,
-            show1: false,
+            show1: false, // password interaction
             emailRules: [
                 v => !!v || 'E-mail est requis',
                 v => /.+@.+/.test(v) || 'E-mail invalide'
@@ -96,19 +95,24 @@ export default {
                 v => !!v || 'Le mot de passe est requis',
                 v => v.length <= 10 || 'Votre mot de passe doit être inférieur à 10 caractères'
             ],
-            validForm: false,
-            errorForm: false,
+            validAlertForm: false, // for validate alert 
+            errorForm: false, // for error alert
             errorMessage: '',
             validCount: 0,
             getLogDatas: '',
         }
     },
     methods: {
-        rememberAccount(){ // Partie cookie 
+        rememberAccount(){ // Partie cookie : gestion de validateCookie du store
             if(this.checkbox == true){
                 this.$cookies.set('connexion', true, 1);
+                this.$store.state.validateCookie = this.$cookies.get('connexion')
+                console.log(this.$store.state.validateCookie)
+                console.log(this.$cookies.get('connexion'))
             } else if(this.checkbox == false){
                 this.$cookies.remove('connexion')
+                this.$store.state.validateCookie = false
+                console.log(this.$store.state.validateCookie)
             }
         },
         sendValidation() {
@@ -120,20 +124,19 @@ export default {
 
             if(mailLog != '' && passLog != ''){
                 // ici traitement entre le mail, password entré et les données de getLogDatas
-                
                 for(let i = 0; i < this.getLogDatas.length; i++){
                     if(mailLog == this.getLogDatas[i].mail && passLog == this.getLogDatas[i].password){
-                        //console.log("Vous êtes autorisé à entrer dans l'application !")
                         this.validCount += 1
                     }
                 }
 
                 if(this.validCount == 1){
-                    this.validForm = true 
-                    this.$store.state.validateForm = true
-                    this.rememberAccount();
-                    this.$emit('availableLogin', {loginValidation: this.validForm})
+                    this.validAlertForm = true
+                    // send validForm data to parent component (with delay)
                     setTimeout(() => {
+                        this.rememberAccount();
+                        this.$store.state.validateForm = true
+                        this.$emit('availableLogin', {loginValidation: this.$store.state.validateForm})
                         this.$router.push({name: "projet1"})
                     }, 2000)
                     
@@ -169,6 +172,15 @@ export default {
                 console.error(err);
             });
         },
+        async checkCookieConnexion() {
+            if(this.$cookies.isKey('connexion')){
+                this.$store.state.validateForm = true
+                console.log(this.$store.state.validateForm)
+            } else {
+                this.$store.state.validateForm = false
+                console.log(this.$store.state.validateForm)
+            }
+        },
         redirectPasswordForgot() {
             // console.log("Redirection vers la partie récupération du mot de passe")
             this.$router.push({name: "recover"})
@@ -176,6 +188,7 @@ export default {
     },
     created(){
         this.getAllAccounts();
+        this.checkCookieConnexion();
     }
 }
 </script>

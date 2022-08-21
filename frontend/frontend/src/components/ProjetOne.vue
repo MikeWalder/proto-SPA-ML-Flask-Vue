@@ -1,6 +1,5 @@
 <template>
     <div class="img text-center">
-        <!-- <p class="mt-16 font-weight-bold">Ceci est la page de déconnexion de l'application</p> -->
         <p class="mt-16 font-weight-bold" id="titleProjet">Entrez l'URL d'une image</p>
                 
                 <v-container>
@@ -78,12 +77,7 @@
                             :hint="alertImgURL"
                             @change="imgUpload()">
                             </v-text-field>
-                            <!-- <div class="rend" v-if="validateImgUrl">
-                                <v-subheader>{{alertImgURL}}</v-subheader>
-                            </div>
-                            <div class="rend" v-if="errorValidImageURL">
-                                <v-subheader>{{alertImgURL}}</v-subheader>
-                            </div> -->
+                            
                         </v-col>
                         <v-col 
                         cols="1"
@@ -108,20 +102,20 @@
                                         <p>Précision : {{(resJSON.result.categories[0].confidence).toPrecision(4)}} %</p>
                                     </div>
                                 </div>
+                                
                             </div>
                         </v-col>
                         <v-col 
                         cols="12"
-                        md="4"
+                        md="6"
                         >
-                            <div class="text-center">
+                            <div class="text-center" style="margin: 0 auto">
                                 <canvas id="myChart"></canvas>
                             </div>
-
                         </v-col>
                         <v-col 
                         cols="0"
-                        md="2"
+                        md="0"
                         ></v-col>
                     </v-row>
                 </v-container>
@@ -195,11 +189,12 @@ export default {
             if(this.myChart !== null) {
                 this.myChart.destroy();
             }
+
             const labels = this.resultLabels;
             const data = {
                 labels: labels,
                 datasets: [{
-                    label: 'Classification de l\'image',
+                    label: '',
                     backgroundColor: [
                         'rgb(255, 99, 132)',
                         'rgb(54, 162, 235)',
@@ -218,22 +213,21 @@ export default {
                     indexAxis: 'y',
                     responsive: true,
                     legend: {
-                        display: true,
-                        position: 'top',
-                        labels: {
-                            color: 'rgb(255, 99, 132)'
-                        }
+                        display: false,  
+                    },
+                    tooltips: {
+                        enabled: false,
                     },
                     plugins: {
                         legend: {
-                            position: 'bottom'
-
+                            position: 'bottom',
+                            display: false,
                         },
                         title: {
                             display: true,
                             text: 'Résultat par catégorie et pourcentage',
                             font: {
-                                size: 16,
+                                size: 18,
                             },
                         },
                     },
@@ -298,6 +292,8 @@ export default {
         verifyConnection() {
             if(this.$cookies.isKey("connexion")){
                 console.log("Le cookie est existant")
+            } else {
+                console.log('Le cookie est inexistant !')
             }
         },
     },

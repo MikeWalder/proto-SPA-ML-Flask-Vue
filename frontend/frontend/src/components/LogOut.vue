@@ -1,6 +1,6 @@
 <template>
-    <div class="text-center pt-8">
-        <p class="display-2 font-weight-bold pb-8">Se déconnecter ? </p>
+    <div class="text-center">
+        <p class="mt-16 font-weight-bold" id="titleLogout">Se déconnecter ?</p>
             <v-container>
                 <v-row class="pt-16">
                     <v-col cols="3" md="4"></v-col>
@@ -15,7 +15,7 @@
                 <v-row>
                     <v-col cols="3" md="4"></v-col>
                     <v-col cols="6" md="4">
-                        <v-alert color="light-green" class="mt-6" dense dark transition="scale-transition" v-if="validateForm == false">
+                        <v-alert color="light-green" class="mt-6" dense dark transition="scale-transition" v-if="validateForm">
                             <v-icon class="mr-4">mdi-check-circle</v-icon>
                             Déconnection en cours ...<br>
                             <span class="ml-6">Redirection...</span> 
@@ -37,25 +37,12 @@ export default {
     name: 'logout', 
     data() {
         return {
-            msg: "This is the projet page",
             dictionnaire: '',
             valid: false,
-            validateForm: true,
-            nomVille: '',
-            dataVille: '',
-            ville: ''
+            validateForm: false,
         }
     },
     methods: {
-        getDictionnaire() {
-            const path = 'http://localhost:5000/projet1'
-            axios.get(path)
-            .then((result) => {
-                this.dictionnaire = result.data;
-                console.log(this.dictionnaire)
-            })
-            .catch(err => {console.log(err)});
-        },
         checkName() {
             console.log(this.nomVille)
             const path="http://localhost:5000/projet1/add"
@@ -71,17 +58,30 @@ export default {
             }).catch(err => {console.log(err)});
         },
         disconnectionAccount(){
-            this.validateForm = false
-            this.$emit('availableLogin', {loginValidation: this.validateForm})
-            this.$cookies.remove('mail')
+            this.validateForm = true
+            // this.$emit('availableLogin', {loginValidation: this.validateForm})
             this.$cookies.remove('connexion')
             setTimeout( () => {
+                this.$store.state.validateForm = false
+                this.$store.state.validateCookie = false
+                this.$cookies.remove('mail')
                 this.$router.push({name: "login"})
             }, 2000)
         },
     },
     created() {
-        this.getDictionnaire();
     }
 }
 </script>
+
+<style>
+#titleLogout {
+    font-size: 30px !important;
+}
+
+@media only screen and (max-width: 920px) {
+    #titleLogin {
+        font-size: 20px !important;
+    }
+}
+</style>

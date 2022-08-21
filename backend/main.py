@@ -10,6 +10,7 @@ DEBUG = True
 
 # instantiate the app
 app = Flask(__name__)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///login.db'
 # Initialize the database
 db = SQLAlchemy(app)
@@ -25,14 +26,10 @@ class Login(db.Model):
             'password': self.password,
         }
     
-    # __init__ method 
+    # __init__ method (constructor)
     def __init__(self, mail, password):
         self.mail = mail
         self.password = password
-
-    ##Create a function to return a string when we add 
-    #def __repr__(self):
-    #   return '<Mail %r>' % self.mail
 
 app.config.from_object(__name__)
 
@@ -46,7 +43,8 @@ GAMES = [12]
 # a simple route
 @app.route('/', methods=['POST'])
 def tableLogin_get():
-    logins = Login.query.order_by(Login.id.desc()).all()
+    # 
+    logins = Login.query.order_by(Login.id.desc()).all() 
     return jsonify(logins=[login.get_dict() for login in logins])
 
 @app.route('/log', methods=['POST'])
@@ -80,17 +78,10 @@ def getDatas():
         json_data = request.get_json()
         ville = json_data.get('ville')
         url_ville = requests.get('https://geo.api.gouv.fr/communes?nom='+ville+'&fields=nom,code,codesPostaux,codeDepartement,codeRegion,population&format=json&geometry=centre')
-        #meteo_code = request.get(url_ville) # => pour voir le code d'erreur
         ville_json = url_ville.json()
-        #meteo_data_json = meteo_data.json()
-        #content = json.loads(meteo_data.content.decode('utf-8'))
-        #response_object['meteo'] = meteo_data
-        #response_object['url_ville'] = url_ville
-        # response_object['meteo_data'] = meteo_data_json
         response_object['ville'] = ville
         response_object['url_ville'] = url_ville
         response_object['ville_json'] = ville_json
-        #response_object['code'] = meteo_data
     return jsonify(response_object)
 
 @app.route('/dashboard/new', methods=['GET', 'POST'])

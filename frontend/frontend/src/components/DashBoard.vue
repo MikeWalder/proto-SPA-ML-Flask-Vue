@@ -1,20 +1,28 @@
 <template>
-    <!-- <p class="text-center pa-6">{{ msg }}</p> -->
     <div>
-        <br><br>
-        <v-text-field v-model="exampleMail" placeholder="Enter a e-mail"></v-text-field><br>
-        <input v-model="examplePass" placeholder="Enter a password"><br>
-        <v-btn color="success" dark elevation="8" @click="getLoginDatas()">Add datas here !</v-btn><br>
-        {{res.password}}
-        <ul>
-            <li v-for="item in resultLogins" :key="item.id">
-                {{item.mail}} - {{item.password}}
-            </li> 
-        </ul>
-        <div v-if="errorForm">Log is null !</div>
-        <p>
-            {{connectCookie}}
-        </p>
+        <p class="mt-16 font-weight-bold text-center" id="titleDashboard">Tableau de bord</p>
+            <v-container fluid class="pt-12">
+                <v-row id="dashboardContainer">
+                    <v-col
+                    cols="6"
+                    id="accountPart"
+                    >
+                        <div class="text-center font-weight-bold
+                        ">
+                            <span class="purple--text text-center">Données personnelles</span>
+                        </div>
+                    </v-col>
+
+                    <v-col
+                    cols="6"
+                    id="chartPart"
+                    >
+                        <div class="text-center">
+                            <span class="text-center">Partie données</span>
+                        </div>
+                    </v-col>
+                </v-row>
+            </v-container>
     </div>
 </template>
 
@@ -60,12 +68,8 @@ export default {
             } else {
                 this.errorForm = true
             }
-        }
+        },
     },
-    created(){
-        this.connectCookie = this.$cookies.get('connexion')
-        console.log(this.connectCookie)
-    }
 }
 </script>
 
@@ -73,5 +77,31 @@ export default {
 .v-main__wrap {
     background-image: url('../../public/grid_project.jpg') !important;
     background-size: cover !important;
+}
+
+#titleDashboard {
+    font-size: 30px !important;
+}
+
+#dashboardContainer {
+    min-height: 80vh !important;
+    border: 2px solid black !important;
+}
+
+#chartPart {
+    background-color: rgba(31, 64, 209, 0.5) !important;
+    min-height: 78vh !important;
+}
+
+#accountPart {
+    background-color: rgba(224, 184, 26, 0.765) !important;
+    min-height: 78vh !important;
+    border-right: 2px solid black !important;
+}
+
+@media only screen and (max-width: 920px) {
+    #titleDashboard {
+        font-size: 20px !important;
+    }
 }
 </style>
