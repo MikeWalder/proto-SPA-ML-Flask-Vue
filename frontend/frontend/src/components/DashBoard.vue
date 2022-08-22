@@ -1,23 +1,27 @@
 <template>
     <div>
         <p class="mt-16 font-weight-bold text-center" id="titleDashboard">Tableau de bord</p>
-            <v-container fluid class="pt-12">
+            <v-container fluid class="pt-12 ml-6 mr-12">
                 <v-row id="dashboardContainer">
                     <v-col
-                    cols="6"
+                    cols="1" class="ml-n8">
+                    </v-col>
+                    <v-col
+                    cols="5"
                     id="accountPart"
                     >
-                        <div class="text-center font-weight-bold
-                        ">
-                            <span class="purple--text text-center">Données personnelles</span>
+                        <div class="text-center font-weight-bold">
+                            <span class="text-center">Données personnelles</span>
+                            {{this.$store.state.localMail}}
                         </div>
                     </v-col>
 
                     <v-col
-                    cols="6"
+                    cols="5"
                     id="chartPart"
+                    class="mr-4"
                     >
-                        <div class="text-center">
+                        <div class="text-center font-weight-bold">
                             <span class="text-center">Partie données</span>
                         </div>
                     </v-col>
@@ -85,7 +89,6 @@ export default {
 
 #dashboardContainer {
     min-height: 80vh !important;
-    border: 2px solid black !important;
 }
 
 #chartPart {

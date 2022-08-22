@@ -12,18 +12,19 @@
         </v-card-title>
         <v-divider class="mt-2"></v-divider>
         
-          <div v-if="!this.$store.state.validateForm">
-            <br class="pt-8">
+          <div v-if="!this.$store.state.validateForm" class="mt-4">
+            <br class="pt-16">
             <router-link to="/">
                 <v-icon class="mx-4">
                     mdi-account
                 </v-icon>
                 <span class="font-weight-bold overline item-nav my-3 navItem h5">Connexion</span>
-            </router-link> <br class="my-3">
+            </router-link> 
+            <br class="my-4">
           </div>
 
-          <div v-if="this.$store.state.validateForm">
-            <br class="pt-8">
+          <div v-if="this.$store.state.validateForm || this.$store.state.localMail" class="mt-4">
+            <br class="pt-16">
             <router-link to="/logout">
               <v-icon class="mx-4">
                   mdi-logout-variant
@@ -31,16 +32,16 @@
               <span class="font-weight-bold overline item-nav my-3 navItem h3">Déconnexion</span>
             </router-link>
             <br class="my-4">
-            
+            <br>
             <router-link to="/projet1">
               <v-icon class="mx-4">
                   mdi-account
               </v-icon>
               <span class="font-weight-bold overline item-nav my-4 navItem">Projet 1</span>
             </router-link> 
-            <br class="my-4">
-            
-            <router-link to="/dashboard" class="py-2">
+            <br class="my-8">
+            <br>
+            <router-link to="/dashboard" class="pt-8">
               <v-icon class="mx-4">
                   mdi-monitor-dashboard
               </v-icon>
@@ -98,9 +99,11 @@ export default {
       console.log(this.$cookies.isKey('connexion'))
     },
     verifyConnection(){
-      if (this.$cookies.isKey("connexion") === true) {
+      if (localStorage.getItem('mail') !== null) {
+        this.$store.state.localMail == true
         this.$store.state.validateForm == true
       } else {
+        this.$store.state.localMail == false
         this.$store.state.validateForm == false
       }
     }
@@ -108,6 +111,7 @@ export default {
   created() {
     this.verifyConnection();
     console.log(this.$cookies.isKey("connexion"))
+    console.log(localStorage.getItem('mail'))
   },
 };
 </script>

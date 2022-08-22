@@ -3,7 +3,6 @@
         <v-row>
             <v-col class="text-center mt-6">
                 <span class="font-weight-bold" id="mainTitleRecoverAccount">Récupération du mot de passe</span><br>
-                
             </v-col>
         </v-row>
 

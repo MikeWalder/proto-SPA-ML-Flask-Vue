@@ -106,12 +106,18 @@ export default {
         rememberAccount(){ // Partie cookie : gestion de validateCookie du store
             if(this.checkbox == true){
                 this.$cookies.set('connexion', true, 1);
+                localStorage.setItem('mail', document.getElementById('mailLog').value)
+                console.log(localStorage.getItem('mail'))
+                this.$store.state.localMail = true
                 this.$store.state.validateCookie = this.$cookies.get('connexion')
+                console.log(this.$store.state.localMail)
                 console.log(this.$store.state.validateCookie)
                 console.log(this.$cookies.get('connexion'))
             } else if(this.checkbox == false){
                 this.$cookies.remove('connexion')
+                this.$store.state.localMail = false
                 this.$store.state.validateCookie = false
+                console.log(this.$store.state.localMail)
                 console.log(this.$store.state.validateCookie)
             }
         },

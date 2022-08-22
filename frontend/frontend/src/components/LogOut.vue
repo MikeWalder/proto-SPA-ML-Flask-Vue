@@ -62,6 +62,7 @@ export default {
             // this.$emit('availableLogin', {loginValidation: this.validateForm})
             this.$cookies.remove('connexion')
             setTimeout( () => {
+                this.$store.state.localMail = false
                 this.$store.state.validateForm = false
                 this.$store.state.validateCookie = false
                 this.$cookies.remove('mail')

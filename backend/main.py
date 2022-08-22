@@ -14,7 +14,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///login.db'
 # Initialize the database
 db = SQLAlchemy(app)
-# Create db model
+
+# Create the Login class
 class Login(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     mail = db.Column(db.String(100), unique=True, nullable=False)
@@ -30,6 +31,9 @@ class Login(db.Model):
     def __init__(self, mail, password):
         self.mail = mail
         self.password = password
+
+# Create the datas linked to an account
+
 
 app.config.from_object(__name__)
 

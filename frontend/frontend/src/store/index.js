@@ -9,8 +9,9 @@ export default new Vuex.Store({
     return {
       count: 0,
       validating: false,
-      validateForm: null,
+      validateForm: false,
       validateCookie: null,
+      localMail: null,
     }
   },
   getters: {
